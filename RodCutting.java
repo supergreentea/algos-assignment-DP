@@ -5,7 +5,9 @@ public class RodCutting {
 
   // Do not change the parameters!
   public int rodCuttingRecur(int rodLength, int[] lengthPrices) {
+      // Initialize array to store solutions to sub-problems.
       int[] memo = new int[rodLength + 1];
+
       for (int i = 1; i <= rodLength; i++) {
           int q = -1;
           for (int k = 1; k <= i; k++) {

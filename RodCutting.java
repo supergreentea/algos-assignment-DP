@@ -5,12 +5,49 @@ public class RodCutting {
 
   // Do not change the parameters!
   public int rodCuttingRecur(int rodLength, int[] lengthPrices) {
-    return 0;
+      int[] memo = new int[rodLength + 1];
+      for (int i = 1; i <= rodLength; i++) {
+          int q = -1;
+          for (int k = 1; k <= i; k++) {
+              q = Math.max(q, lengthPrices[k - 1] + memo[i - k]);
+          }
+          memo[i] = q;
+      }
+      return memo[rodLength];
   }
 
   // Do not change the parameters!
   public int rodCuttingBottomUp(int rodLength, int[] lengthPrices) {
-    return 0;
+      // Initialize array to store solutions to sub-problems.
+      int[] memo = new int[rodLength + 1];
+
+      // Mark unsolved sub-problems with -1.
+      for (int i = 0; i < rodLength + 1; i++) memo[i] = -1;
+
+      // Call auxiliary function to solve.
+      return rodCuttingBottomUpAux(lengthPrices, rodLength, memo);
+  }
+
+  public int rodCuttingBottomUpAux(int[] lengthPrices, int n, int[] memo) {
+      // Positive value means sub-problem was solved.
+      if (memo[n] >= 0) return memo[n];
+
+      // Initialize value of solution to sub-problem to -1.
+      int q = -1;
+
+      // Rod of length 0 earns no revenue.
+      if (n == 0) q = 0;
+      else {
+          for (int i = 1; i <= n; i++) {
+              // We check index i - 1 of lengthPrices since array is 0-indexed.
+              q = Math.max(q, lengthPrices[i - 1] + rodCuttingBottomUpAux(lengthPrices, n - i, memo));
+          }
+      }
+
+      // Store computed solution.
+      memo[n] = q;
+
+      return q;
   }
 
 

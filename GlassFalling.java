@@ -38,6 +38,8 @@ public class GlassFalling {
     // Pick whatever parameters you want to, just make sure to return an int.
     public int glassFallingMemoized(int floors, int sheets) {
         // Fill in here and change the return
+
+        // Initialize 2d memo array.
         ArrayList<ArrayList<Integer>> memo = new ArrayList<>();
 
         // Fill memo with Integer.MAX_VALUE to mark sub-problem as unsolved.
@@ -47,15 +49,17 @@ public class GlassFalling {
                 memo.get(i).add(Integer.MAX_VALUE);
             }
         }
-        System.out.println(memo);
+
+        // Return result from auxiliary function.
         return glassFallingMemoizedAux(floors, sheets, memo);
     }
 
     // Auxiliary function for glassFallingMemoized
     public int glassFallingMemoizedAux(int floors, int sheets, ArrayList<ArrayList<Integer>> memo) {
+        // If value in array is less than Integer.MAX_VALUE then sub-problem was solved, so return value.
         if (memo.get(sheets).get(floors) < Integer.MAX_VALUE) return memo.get(sheets).get(floors);
 
-
+        // Boundary conditions.
         if (floors == 0 || floors == 1 || sheets == 1) {
             memo.get(sheets).set(floors, floors);
             return floors;
@@ -64,13 +68,15 @@ public class GlassFalling {
         int minTrials = Integer.MAX_VALUE;
         int trials;
 
+        // Get worst case for each floor, and find floor with minimal trials.
         for (int i = 1; i <= floors; i++) {
+            // As described in write-up, sub-problems for when sheet breaks or does not break. Get the worse case.
             trials = 1 + Math.max(glassFallingMemoizedAux(i - 1, sheets - 1, memo),
                                   glassFallingMemoizedAux(floors - i, sheets, memo));
-            minTrials = Math.min(minTrials, trials);
+            minTrials = Math.min(minTrials, trials); // Find minimum trials from testing all floors.
         }
 
-        memo.get(sheets).set(floors, minTrials);
+        memo.get(sheets).set(floors, minTrials); // Store calculation in memo array.
         return minTrials;
     }
 
@@ -95,8 +101,9 @@ public class GlassFalling {
             for (int j = 2; j <= floors; j++) {
                 memo[i][j] = Integer.MAX_VALUE;
                 for (int x = 1; x <= j; x++) {
+                    // As described in write-up, sub-problems for when sheet breaks or does not break. Get the worse case.
                     trials = 1 + Math.max(memo[i - 1][x - 1], memo[i][j - x]);
-                    memo[i][j] = Math.min(memo[i][j], trials);
+                    memo[i][j] = Math.min(memo[i][j], trials); // Store result from floor with minimal trials in array.
                 }
             }
         }
@@ -107,12 +114,6 @@ public class GlassFalling {
 
     public static void main(String args[]){
         GlassFalling gf = new GlassFalling();
-        int[][] memo = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
-                memo[i][j] = Integer.MAX_VALUE;
-            }
-        }
         // Do not touch the below lines of code, and make sure
         // in your final turned-in copy, these are the only things printed
         int minTrials1Recur = gf.glassFallingMemoized(27, 2);
